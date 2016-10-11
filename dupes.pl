@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use strict;
+#use strict;
 use Data::Dumper;
 use File::Find;
 use Digest::MD5;
@@ -28,13 +28,13 @@ check_dupes ();
 sub check_dupes {
 
     if ( defined $file_score ){
-	foreach (keys $file_score) {
+	foreach (keys %{$file_score }) {
 	    my $cur_md5 = $_;
 	    my $list_file = $file_score->{$cur_md5};
 	    
 #	print Dumper ($list_file);
 	    
-	    my @file_list = sort {$list_file->{$a} <=> $list_file->{$b} } keys $list_file;
+	    my @file_list = sort {$list_file->{$a} <=> $list_file->{$b} } keys %{$list_file};
 #	print Dumper (@file_list);
 	    
 	    print "# Keep : " . $file_list[0] . ' ' . $list_file->{$file_list[0]} . "\n";
@@ -53,15 +53,15 @@ sub check_dupes {
 }
 
 sub mod_score {
-    foreach (keys $md5_list) {
+    foreach (keys %{$md5_list}) {
 	my $cur_md5 = $_;
 	my $list_md5_file = $md5_list->{$cur_md5};
 #	print Dumper($list_md5_file);
 
 	# get score only for dup to reduce size of hash
-	my $nb_file = scalar keys $list_md5_file;
+	my $nb_file = scalar keys %{$list_md5_file};
 	if ( $nb_file > 1 ) {
-	    foreach (keys $list_md5_file) {
+	    foreach (keys %{$list_md5_file}) {
 		my $name = $list_md5_file->{$_}->{name};
 		my $dir = $list_md5_file->{$_}->{dir};
 		my $score = $dir_list->{$dir};
